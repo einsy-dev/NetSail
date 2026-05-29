@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -13,6 +13,7 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			$app: 'src/app',
+			$utils: 'src/utils',
 			$shared: 'src/shared',
 			$actions: 'src/shared/actions',
 			$widgets: 'src/widgets',

@@ -1,71 +1,17 @@
 <script lang="ts">
-	import { CsvParser } from '$go/services/csvParser';
+	import * as ParseCSV from '$go/services/parse-csv/csv';
 	import { Clear, Copy, Input } from '$shared/ui';
-	import { readFile } from '$shared/utils/readFile';
-	import { AddFile, Table } from '$widgets/parseCsv';
+	import { Table } from '$widgets/parseCsv';
 	import { sidebarState } from '$widgets/sidebar';
-	import { Menu } from '@lucide/svelte';
+	import { copyFormatCSV, filterCSV } from './services';
+	import { FilePlus, Menu } from '@lucide/svelte';
+	import { Events } from '@wailsio/runtime';
 
-	let files = $state([]);
-	let parsed: string[][] = $state([]);
-	let value = $state([]);
+	let value: string[][] = $state([]);
+	// let filtered = $derived(filterCSV(value, value[0].length ? value : undefined));
 
-	let defValue = [
-		'Domain',
-		'Domain Rating',
-		'Organic / Traffic',
-		'Organic / Top Countries',
-		'Ref. domains / All',
-		'Outgoing domains / All time',
-		'Authority Score',
-		'TrustFlow',
-		'CitationFlow',
-		'TopicalTrustFlow_Topic_0'
-	];
-
-	let filtered = $derived(filterCSV(parsed, value.length ? value : defValue));
-
-	function filterCSV(csv: string[][], columns: string[]): string[][] {
-		if (!columns.length || !csv.length) return csv;
-		let res: string[][] = [];
-		for (let i = 0; i < csv.length; i++) {
-			for (let j = 0; j < csv[0].length; j++) {
-				if (columns.includes(csv[0][j])) {
-					if (!Array.isArray(res[i])) res[i] = [];
-					res[i].push(csv[i][j]);
-				}
-			}
-		}
-
-		const currentHeader = res[0];
-
-		// 2. Create a map of the target indices
-		// This tells us: "Column 0 should actually be at index X"
-		const sortedIndices = currentHeader
-			.map((colName, index) => index)
-			.sort((a, b) => {
-				return defValue.indexOf(currentHeader[a]) - defValue.indexOf(currentHeader[b]);
-			});
-
-		// 3. Map every row to the new index order
-		const sortedRes = res.map((row) => sortedIndices.map((i) => row[i]));
-
-		return sortedRes;
-	}
-
-	function copyFormatCSV(csv: string[][]) {
-		return csv.map((el) => el.join('\t')).join('\r\n');
-	}
-
-	$effect(() => {
-		if (!files.length) return;
-		Promise.all(files.map((f) => readFile(f))).then(async (res) => {
-			if (!res.length) {
-				parsed = [];
-				return;
-			}
-			parsed = await CsvParser.Parse(res as string[]);
-		});
+	Events.On('parseCsv', () => {
+		alert('ParseEvent');
 	});
 </script>
 
@@ -77,27 +23,34 @@
 				sidebarState.set(true);
 			}}
 		/>
-		<Clear
-			onclick={() => {
-				files = [];
-				value = [];
-				parsed = [];
-			}}
-		/>
+		<Clear onclick={ParseCSV.Clear} />
 		<Input
 			type="select"
 			bind:value
-			options={parsed[0]?.map((el) => ({ title: el, value: el }))}
+			options={value[0]?.map((el) => ({ title: el, value: el }))}
 			multiple
 			class="p-1 bg-amber-700 w-full"
 		/>
-		<Copy value={copyFormatCSV(filtered)} />
+		<Copy value={copyFormatCSV(value)} />
 	</div>
 
 	<div class="relative flex-1 min-h-0 p-4 flex flex-col">
-		<AddFile bind:files />
+		<div class="h-full p-2 absolute inset-0" onclick={ParseCSV.ParseFiles} role="none">
+			<div
+				class="h-full rounded border bg-[rgba(60,60,60,1)]"
+				id={'parse-csv'}
+				data-file-drop-target
+			>
+				<div
+					class="flex flex-col gap-2 border rounded h-full w-full items-center justify-center cursor-pointer text-white"
+				>
+					<FilePlus class="w-10 h-10 " />
+					<span>Choose a file or drag it over here</span>
+				</div>
+			</div>
+		</div>
 		<div class="flex-1 overflow-auto">
-			<Table data={filtered} />
+			<Table data={value} />
 		</div>
 	</div>
 </div>

@@ -1,11 +1,8 @@
 <script lang="ts">
 	import Sidebar from '$widgets/sidebar/index.svelte';
 	import './layout.css';
-	import { onMount } from 'svelte';
 
 	let { children } = $props();
-
-	onMount(async () => {});
 </script>
 
 <svelte:head><link rel="icon" href={'#'} /></svelte:head>

@@ -1,7 +1,7 @@
 # This file contains the configuration for this project.
 # When you update `info` or `fileAssociations`, run `wails3 task common:update:build-assets` to update the assets.
 # Note that this will overwrite any changes you have made to the assets.
-version: '3'
+version: "3"
 
 # This information is used to generate the build assets.
 info:
@@ -61,6 +61,11 @@ dev_mode:
 # File Associations
 # More information at: https://v3.wails.io/noit/done/yet
 fileAssociations:
+  - ext: csv
+    name: CSV Document
+    description: CSV File
+    iconName: csvFileIcon
+    role: Editor
 #  - ext: wails
 #    name: Wails
 #    description: Wails Application File

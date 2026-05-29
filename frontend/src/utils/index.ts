@@ -1,0 +1,1 @@
+export { fileToByte } from './fileToByte';

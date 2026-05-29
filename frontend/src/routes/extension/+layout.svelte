@@ -20,7 +20,7 @@
 </script>
 
 <Header {tabs} />
-<div class="relative">
+<div class="relative flex flex-col grow ">
 	{@render children?.()}
 	<Controls />
 </div>

@@ -7,7 +7,7 @@
 </script>
 
 <Input type="file" class="flex grow" bind:value={files} multiple>
-	<div class="flex grow flex-col text-white px-2 py-1 gap-1">
+	<div class="flex grow flex-col text-white px-2 py-1 gap-1" role="none">
 		<AccountsList
 			accounts={[
 				{

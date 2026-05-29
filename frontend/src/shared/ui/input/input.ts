@@ -10,7 +10,7 @@ export interface InputI {
 	email: InputIDef & { type?: 'email' };
 	password: InputIDef & { type?: 'password' };
 	username: InputIDef & { type?: 'username' };
-	file: InputIDef & { type?: 'file'; label?: string; children?: Snippet; multiple?: boolean };
+	file: InputIDef & { type?: 'file'; label?: string; children?: Snippet; id?: string };
 	select: InputIDef & { type?: 'select'; options: Option[]; multiple?: boolean };
 	html: InputIDef & { type?: 'html' };
 	textarea: InputIDef & { type?: 'textarea' };
